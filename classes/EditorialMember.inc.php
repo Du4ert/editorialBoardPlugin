@@ -35,7 +35,7 @@ class EditorialMember extends DataObject {
 
 
 	/**
-	 * Set page title
+	 * Set member title
 	 * @param string string
 	 * @param locale
 	 */
@@ -44,7 +44,7 @@ class EditorialMember extends DataObject {
 	}
 
 	/**
-	 * Get page title
+	 * Get member title
 	 * @param locale
 	 * @return string
 	 */
@@ -53,7 +53,7 @@ class EditorialMember extends DataObject {
 	}
 
 	/**
-	 * Get Localized page title
+	 * Get Localized member title
 	 * @return string
 	 */
 	function getLocalizedTitle() {
@@ -62,7 +62,7 @@ class EditorialMember extends DataObject {
 
 
     	/**
-	 * Set page affiliation
+	 * Set member affiliation
 	 * @param $affiliation string
 	 * @param locale
 	 */
@@ -71,7 +71,7 @@ class EditorialMember extends DataObject {
 	}
 
 	/**
-	 * Get page affiliation
+	 * Get member affiliation
 	 * @param locale
 	 * @return string
 	 */
@@ -89,7 +89,7 @@ class EditorialMember extends DataObject {
 	}
 
     	/**
-	 * Set page bio
+	 * Set member bio
 	 * @param $bio string
 	 * @param locale
 	 */
@@ -98,7 +98,7 @@ class EditorialMember extends DataObject {
 	}
 
 	/**
-	 * Get page bio
+	 * Get member bio
 	 * @param locale
 	 * @return string
 	 */
@@ -117,35 +117,33 @@ class EditorialMember extends DataObject {
 
 
     /**
-	 * Set page references
+	 * Set member references
 	 * @param $references string
-	 * @param locale
 	 */
-	function setReferences($references, $locale) {
-		return $this->setData('references', $references, $locale);
+	function setReferences($references) {
+		return $this->setData('references', $references);
 	}
 
 	/**
-	 * Get page references
-	 * @param locale
+	 * Get member references
 	 * @return string
 	 */
-	function getReferences($locale) {
-		return $this->getData('references', $locale);
+	function getReferences() {
+		return $this->getData('references');
 	}
+
     
+	// 	/**
+	//  * Get "localized" references
+	//  * @return string
+	//  */
+	// function getLocalizedReferences() {
+	// 	return $this->getLocalizedData('references');
+	// }
+
 
 	/**
-	 * Get "localized" references
-	 * @return string
-	 */
-	function getLocalizedReferences() {
-		return $this->getLocalizedData('references');
-	}
-    
-
-	/**
-	 * Get page path string
+	 * Get member path string
 	 * @return string
 	 */
 	function getPath() {
@@ -153,7 +151,7 @@ class EditorialMember extends DataObject {
 	}
 
 	 /**
-	  * Set page path string
+	  * Set member path string
 	  * @param $path string
 	  */
 	function setPath($path) {

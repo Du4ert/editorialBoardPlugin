@@ -27,11 +27,13 @@ class EditorialBoardPlugin extends GenericPlugin {
 	{
 		if (parent::register($category, $path, $mainContextId)) {
 			if ($this->getEnabled($mainContextId)) {
-				import('plugins.generic.editorialBoard.classes.EditorialMembersDAO');
-				$editorialMembersDAO = new EditorialMembersDAO();
-				DAORegistry::registerDAO('EditorialMembersDAO', $editorialMembersDAO);
+				HookRegistry::register('PluginRegistry::loadCategory', [$this, 'updateSchema']);
+				import('plugins.generic.editorialBoard.classes.EditorialBoardDAO');
+				$editorialBoardDAO = new EditorialBoardDAO();
+				DAORegistry::registerDAO('EditorialBoardDAO', $editorialBoardDAO);
+				$this->getInstallMigration();
 
-				// HookRegistry::register('LoadHandler', array($this, 'callbackHandleContent'));
+				HookRegistry::register('LoadHandler', array($this, 'callbackHandleContent'));
 
 				HookRegistry::register('Template::Settings::website', array($this, 'callbackShowWebsiteSettingsTabs'));
 				HookRegistry::register('LoadComponentHandler', array($this, 'setupGridHandler'));
@@ -90,12 +92,62 @@ class EditorialBoardPlugin extends GenericPlugin {
 
 	function getInstallMigration()
 	{
-		$this->import('EditorialMembersSchemaMigration');
-		return new EditorialMembersSchemaMigration();
+		$this->import('EditorialBoardSchemaMigration');
+		return new EditorialBoardSchemaMigration();
+	}
+
+	function updateSchema($hookName, $args)
+	{
+		$migration = $this->getInstallMigration();
+		if ($migration && !$migration->check()) {
+			$migration->up();
+		}
+		return false;
 	}
 
 	function getJavaScriptURL($request) {
 		return $request->getBaseUrl() . '/' . $this->getPluginPath() . '/js';
+	}
+
+	function callbackHandleContent($hookName, $args)
+	{
+		$request = Application::get()->getRequest();
+		$templateMgr = TemplateManager::getManager($request);
+
+		$page =& $args[0];
+		$op =& $args[1];
+
+		$editorialBoardDAO = DAORegistry::getDAO('EditorialBoardDAO');
+		if ($page == 'members' && $op == 'preview') {
+			$editorialMember = $editorialBoardDAO->newDataObject();
+			$editorialMember->setTitle((array) $request->getUserVar('title'), null);
+			$editorialMember->setAffiliation((array) $request->getUserVar('affiliation'), null);
+			$editorialMember->setBio((array) $request->getUserVar('bio'), null);
+			$editorialMember->setReferences((array) $request->getUserVar('references'));
+		} else {
+			$path = $page;
+			if ($op !== 'index') $path .= "/$op";
+			if ($ops = $request->getRequestedArgs()) $path .= '/' . implode('/', $ops);
+
+			$context = $request->getContext();
+			$editorialMember = $editorialBoardDAO->getByPath(
+				$context?$context->getId():CONTEXT_ID_NONE,
+				$path
+			);
+		}
+
+		if ($editorialMember) {
+			$page = 'members';
+			$op = 'view';
+
+			define('HANDLER_CLASS', 'EditorialBoardHandler');
+			$this->import('EditorialBoardHandler');
+
+			EditorialBoardHandler::setPlugin($this);
+			EditorialBoardHandler::setPage($editorialMember);
+			return true;
+		}
+		return false;
 	}
 
 	

@@ -46,8 +46,8 @@ class EditorialMemberGridHandler extends GridHandler
         $this->setEmptyRowText('none created');
 
 		// Get the pages and add the data to the grid
-		$editorialMembersDAO = DAORegistry::getDAO('EditorialMembersDAO');
-		$this->setGridDataElements($editorialMembersDAO->getByContextId($context->getId()));
+		$editorialBoardDAO = DAORegistry::getDAO('EditorialBoardDAO');
+		$this->setGridDataElements($editorialBoardDAO->getByContextId($context->getId()));
 
         // Add grid-level actions
 		$router = $request->getRouter();
@@ -103,6 +103,7 @@ class EditorialMemberGridHandler extends GridHandler
 	{
         $editorialMemberId = $request->getUserVar('editorialMemberId');
         $context = $request->getContext();
+		$this->setupTemplate($request);
 
         // Create edit form
         import('plugins.generic.editorialBoard.controllers.grid.form.EditorialMemberForm');
@@ -112,7 +113,7 @@ class EditorialMemberGridHandler extends GridHandler
         return new JSONMessage(true, $editorialMemberForm->fetch($request));
     }
 
-	function updateEditorialMemberPage($args, $request) 
+	function updateEditorialMember($args, $request) 
 	{
 		$editorialMemberId = $request->getUserVar('editorialMemberId');
 		$context = $request->getContext();
@@ -142,9 +143,9 @@ class EditorialMemberGridHandler extends GridHandler
 		$context = $request->getContext();
 
 		// Delete the editorial member
-		$editorialMembersDAO = DAORegistry::getDAO('EditorialMembersDAO');
-		$editorialMember = $editorialMembersDAO->getById($editorialMemberId, $context->getId());
-		$editorialMembersDAO->deleteObject($editorialMember);
+		$editorialBoardDAO = DAORegistry::getDAO('EditorialBoardDAO');
+		$editorialMember = $editorialBoardDAO->getById($editorialMemberId, $context->getId());
+		$editorialBoardDAO->deleteObject($editorialMember);
 
 		return DAO::getDataChangedEvent();
 	}

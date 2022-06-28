@@ -3,7 +3,7 @@
 import('lib.pkp.classes.db.DAO');
 import('plugins.generic.editorialBoard.classes.editorialMember');
 
-class EditorialMembersDAO extends DAO 
+class EditorialBoardDAO extends DAO 
 {
 
     function getById($editorialMemberId, $contextId = null)
@@ -12,7 +12,7 @@ class EditorialMembersDAO extends DAO
         if ($contextId) $params[] = (int) $contextId;
 
         $result = $this->retrieve(
-            'SELECT * FROM editorial_members WHERE editorial_member_id = ?'
+            'SELECT * FROM editorial_board WHERE editorial_member_id = ?'
             . ($contextId?' AND context_id = ?':''),
             $params
         );
@@ -23,7 +23,7 @@ class EditorialMembersDAO extends DAO
     function getByContextId($contextId, $rangeInfo = null)
     {
         $result = $this->retrieveRange(
-            'SELECT * FROM editorial_members WHERE context_id = ?',
+            'SELECT * FROM editorial_board WHERE context_id = ?',
             [(int) $contextId],
             $rangeInfo
         );
@@ -33,7 +33,7 @@ class EditorialMembersDAO extends DAO
     function getByPath($contextId, $path)
     {
         $result = $this->retrieve(
-            'SELECT * FROM editorial_members WHERE context_id = ? AND path = ?',
+            'SELECT * FROM editorial_board WHERE context_id = ? AND path = ?',
             [(int) $contextId, $path]
         );
         $row = $result->current();
@@ -43,7 +43,7 @@ class EditorialMembersDAO extends DAO
     function insertObject($editorialMember)
     {
         $this->update(
-            'INSERT INTO editorial_members (context_id, path) VALUES (?, ?)',
+            'INSERT INTO editorial_board (context_id, path) VALUES (?, ?)',
             [(int) $editorialMember->getContextId(), $editorialMember->getPath()]
         );
 
@@ -51,26 +51,26 @@ class EditorialMembersDAO extends DAO
         $this->updateLocaleFields($editorialMember);
     }
 
-    function updateObject($editorialMember)
+	function updateObject($editorialMember) 
     {
-        $this->update(
-            'UPDATE editorial_members
-            SET context_id = ?
-                path = ?
-            WHERE editorial_member_id = ?',
-            [
-                (int) $editorialMember->getContextId(),
-                $editorialMember->getPath(),
-                (int) $editorialMember->getId()
-            ]
-        );
-        $this->updateLocaleFields($editorialMember);
-    }
+		$this->update(
+			'UPDATE	editorial_board
+			SET	context_id = ?,
+				path = ?
+			WHERE	editorial_member_id = ?',
+			[
+				(int) $editorialMember->getContextId(),
+				$editorialMember->getPath(),
+				(int) $editorialMember->getId()
+			]
+		);
+		$this->updateLocaleFields($editorialMember);
+	}
 
     function deleteById($editorialMemberId)
     {
         $this->update(
-            'DELETE FROM editorial_members WHERE editorial_member_id = ?',
+            'DELETE FROM editorial_board WHERE editorial_member_id = ?',
             [(int) $editorialMemberId]
         );
         $this->update(
@@ -102,12 +102,12 @@ class EditorialMembersDAO extends DAO
 
     function getInsertId()
     {
-        return $this->_getInsertId('editorial_members', 'editorial_member_id');
+        return $this->_getInsertId('editorial_board', 'editorial_member_id');
     }
 
     function getLocaleFieldNames()
     {
-        return ['title', 'affiliation', 'bio', 'references'];
+        return ['title', 'affiliation', 'bio'];
     }
 
     function updateLocaleFields(&$editorialMember)
@@ -116,5 +116,11 @@ class EditorialMembersDAO extends DAO
             ['editorial_member_id' => $editorialMember->getId()]
         );
     }
+
+	function getAdditionalFieldNames() {
+		return array_merge(parent::getAdditionalFieldNames(), [
+			'references',
+		]);
+	}
 
 }
