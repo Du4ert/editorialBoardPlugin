@@ -21,16 +21,16 @@ class EditorialMemberForm extends Form {
 		$this->plugin = $editorialBoardPlugin;
 
 		// Add form checks
-		// $this->addCheck(new FormValidatorPost($this));
-		// $this->addCheck(new FormValidatorCSRF($this));
-		// $this->addCheck(new FormValidator($this, 'title', 'required', 'plugins.generic.editorialBoard.nameRequired'));
-		// $this->addCheck(new FormValidatorRegExp($this, 'path', 'required', 'plugins.generic.editorialBoard.pathRegEx', '/^[a-zA-Z0-9\/._-]+$/'));
-		// $form = $this;
-		// $this->addCheck(new FormValidatorCustom($this, 'path', 'required', 'plugins.generic.editorialBoard.duplicatePath', function($path) use ($form) {
-		// 	$editorialBoardDAO = DAORegistry::getDAO('EditorialBoardDAO');
-		// 	$page = $editorialBoardDAO->getByPath($form->contextId, $path);
-		// 	return !$page || $page->getId()==$form->editorialMemberId;
-		// }));
+		$this->addCheck(new FormValidatorPost($this));
+		$this->addCheck(new FormValidatorCSRF($this));
+		$this->addCheck(new FormValidator($this, 'title', 'required', 'plugins.generic.editorialBoard.nameRequired'));
+		$this->addCheck(new FormValidatorRegExp($this, 'path', 'required', 'plugins.generic.editorialBoard.pathRegEx', '/^[a-zA-Z0-9\/._-]+$/'));
+		$form = $this;
+		$this->addCheck(new FormValidatorCustom($this, 'path', 'required', 'plugins.generic.editorialBoard.duplicatePath', function($path) use ($form) {
+			$editorialBoardDAO = DAORegistry::getDAO('EditorialBoardDAO');
+			$page = $editorialBoardDAO->getByPath($form->contextId, $path);
+			return !$page || $page->getId()==$form->editorialMemberId;
+		}));
 	}
 
 	function initData()
@@ -43,7 +43,7 @@ class EditorialMemberForm extends Form {
 			$this->setData('title', $editorialMember->getTitle(null));  // Localized
 			$this->setData('affiliation', $editorialMember->getAffiliation(null));  // Localized
 			$this->setData('bio', $editorialMember->getBio(null));  // Localized
-			$this->setData('references', $editorialMember->getReferences(null));  //! Localized
+			$this->setData('references', $editorialMember->getReferences());  //! Localized
 
 		}
 	}

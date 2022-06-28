@@ -19,15 +19,13 @@
     {/if}
     {fbvFormArea id="editorialBoardFormArea" class="border"}
         {fbvFormSection}
-            {fbvElement type="text" label="Path" id="path" value=$path maxlength="40" inline=true size=$fbvStyles.size.MEDIUM}
-            {fbvElement type="text" label="Title" id="title" value=$title maxlength="255" inline=true multilingual=true size=$fbvStyles.size.MEDIUM}
+            {fbvElement type="text" label="Title" id="title" value=$title maxlength="255" inline=true multilingual=true size=$fbvStyles.size.MEDIUM required=true}
+            {fbvElement type="text" label="Path" id="path" value=$path maxlength="40" inline=true size=$fbvStyles.size.MEDIUM required=true}
         {/fbvFormSection}
         {fbvFormSection}
-            {capture assign="exampleUrl"}{url|replace:"REPLACEME":"%PATH%" router=$smarty.const.ROUTE_PAGE context=$currentContext->getPath() page="REPLACEME"}{/capture}
-            {translate key="plugins.generic.staticPages.viewInstructions" pagesPath=$exampleUrl}
+        {fbvElement type="text" label="Affiliation" id="affiliation" value=$affiliation maxlength="255" inline=false multilingual=true size=$fbvStyles.size.MEDIUM}
+        {fbvElement type="text" label="Bio" id="bio" value=$bio maxlength="255" inline=false multilingual=true size=$fbvStyles.size.MEDIUM}
         {/fbvFormSection}
-        {fbvElement type="text" label="Affiliation" id="affiliation" value=$affiliation maxlength="255" inline=true multilingual=true size=$fbvStyles.size.MEDIUM}
-        {fbvElement type="text" label="Bio" id="bio" value=$bio maxlength="255" inline=true multilingual=true size=$fbvStyles.size.MEDIUM}
         {fbvFormSection label="References" for="references"}
           {fbvElement type="textarea" multilingual=false name="references" id="references" value=$references rich=true height=$fbvStyles.height.TALL variables=$allowedVariables}
         {/fbvFormSection}
